@@ -1,7 +1,2 @@
 # Pre-Production
-54.169.240.142      executivecentre.com
-54.169.240.142      www.executivecentre.com
-54.169.240.142      executivecentre.com.cn
-54.169.240.142      www.executivecentre.com.cn
-54.169.240.142      executivecentre.co.kr
-54.169.240.142      www.executivecentre.co.kr
+13.212.190.70      executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
