@@ -1,10 +1,17 @@
 git clone git@github.com:steven-chong-tec/tec-hosts-file.git ~/repos/tec-hosts-file 2>/dev/null
 cd ~/repos/tec-hosts-file
-aws ecs list-tasks --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker --family prd-marketing-website --desired-status RUNNING |
-  jq -r ".taskArns[0]" |
+
+TASK_ARN=$(aws ecs list-tasks --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker --family prd-marketing-website --desired-status RUNNING | jq -r ".taskArns[0]")
+if [ ! -z $TASK_ARN ]
+then
+   echo $TASK_ARN;
+   TASKS=$(aws ecs describe-tasks --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker --tasks $TASK_ARN | jq -r ".tasks[0]")
+   IP=$($TASK | jq -r ".attachments[0].details[3]")
+fi
+   |
   xargs -I {} aws ecs describe-tasks --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker --tasks {} |
   jq -r ".tasks[0].attachments[0].details[3].value" |
-  xargs -I {} echo $'# Pre-Production\n{}    executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr' > pre-production.txt
+  xargs -I {} echo $'# Pre-Production\n{}    executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr' > index.html
 git add --all
 git commit -a -m "auto commit"
 git push
