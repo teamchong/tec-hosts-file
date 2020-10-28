@@ -1,2 +1,2 @@
 # Pre-Production
-172.31.9.187    executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
+ip-172-31-9-187.ap-southeast-1.compute.internal    executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
