@@ -23,7 +23,7 @@ jobs:
 
     - name: Retrieve TASK_PUBLIC_IP
       shell: bash
-      run:
+      run: |
         TASK_ARN=$(aws ecs list-tasks --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker --family prd-marketing-website --desired-status RUNNING --no-paginate --query 'taskArns[0]' --output text)
         if [ ! -z $TASK_ARN ]; then
           TASK_ENI=$(aws ecs describe-tasks --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker --tasks $TASK_ARN --no-paginate --query '(sort_by(tasks[?attachments[0].status != `ATTACHING` && attachments[0].details[? name == `networkInterfaceId`].value != ``], &version)[-1].attachments[0].details[? name == `networkInterfaceId`].value)[0]' --output text)
