@@ -43,7 +43,6 @@ jobs:
           --cluster 'arn:aws:ecs:ap-southeast-1:949519472813:cluster/uat-etg-docker' \
           --service 'arn:aws:ecs:ap-southeast-1:949519472813:service/marketing-website-proxy' \
           --desired-count 1 \
-          --task-definition '$TASK_DEFINITION_ARN' \
+          --task-definition ''$TASK_DEFINITION_ARN'' \
           --deployment-configuration '{"maximumPercent":200,"minimumHealthyPercent":100}' \
-          --platform-version '1.4.0' \
           --force-new-deployment
