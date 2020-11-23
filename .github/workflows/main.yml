@@ -3,6 +3,7 @@ name: Refresh public IP from AWS ECS
 on:
   schedule:
     - cron: '*/1 * * * *'
+  workflow_dispatch:
 
 jobs:
   deploy:
