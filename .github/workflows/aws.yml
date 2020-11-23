@@ -28,21 +28,21 @@ jobs:
 
     - name: GitHub Script
       uses: actions/github-script@v3.1.0
-      if: ${{ !!TASK_ARN }}
+      if: ${{ !!$TASK_ARN }}
       with:
         script: |
          echo "TASK_ENI=$(aws ecs describe-tasks --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker --tasks $TASK_ARN --no-paginate --query '(sort_by(tasks[?attachments[0].status != `ATTACHING` && attachments[0].details[? name == `networkInterfaceId`].value != ``], &version)[-1].attachments[0].details[? name == `networkInterfaceId`].value)[0]' --output text)" >> $GITHUB_ENV
 
     - name: Assign $TASK_ARN
       uses: actions/github-script@v3.1.0
-      if: ${{ !!TASK_ENI }}
+      if: ${{ !!$TASK_ENI }}
       with:
         script: |
           echo "TASK_PUBLIC_IP=$(aws ec2 describe-network-interfaces --network-interface-ids eni-01791e7c09b43174a --no-paginate --query '(NetworkInterfaces[? Association.PublicIp != ``])[0].Association.PublicIp' --output text)" >> $GITHUB_ENV
 
     - name: Assign $TASK_ARN
       uses: actions/github-script@v3.1.0
-      if: ${{ !!TASK_PUBLIC_IP }}
+      if: ${{ !!$TASK_PUBLIC_IP }}
       with:
         script: |
           echo $TASK_PUBLIC_IP
