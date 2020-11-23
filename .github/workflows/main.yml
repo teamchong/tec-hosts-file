@@ -55,7 +55,7 @@ jobs:
         # Pre-Production
         $TASK_PUBLIC_IP executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
         EOF
-    - name: GitHub Script
-      uses: actions/github-script@v3.1.0
+    - name: Git Commit and Push
+      uses: actions-x/commit@v2
       with:
-        script: git add --all && git commit -a -m 'auto commit' && git push
+        message: autocommit
