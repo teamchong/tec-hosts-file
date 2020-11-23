@@ -1,8 +1,8 @@
+name: Refresh public IP from AWS ECS
+
 on:
   schedule:
     - cron: '*/1 * * * *'
-
-name: Refresh public IP from AWS ECS
 
 jobs:
   deploy:
