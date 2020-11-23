@@ -51,7 +51,7 @@ jobs:
           --output text \
         )
         [ -z $TASK_PUBLIC_IP ] && exit 1
-        cat $TASK_PUBLIC_IP > public_ip.txt
+        echo $TASK_PUBLIC_IP > public_ip.txt
         cat <<EOF > index.html
         # Pre-Production
         $TASK_PUBLIC_IP executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
