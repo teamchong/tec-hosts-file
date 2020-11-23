@@ -27,6 +27,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Deploy new proxy
         run: |
+          TASK_PUBLIC_IP=$(cat public_ip.txt)
           TASK_DEFINITION_ARN=$( \
             aws ecs register-task-definition \
             --family 'uat-marketing-website-proxy' \
