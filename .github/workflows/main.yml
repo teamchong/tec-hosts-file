@@ -28,6 +28,13 @@ jobs:
       - name: Deploy new proxy
         run: |
           TASK_PUBLIC_IP=$(cat public_ip.txt)
+          CURRENT_IP=$( \
+            aws ecs describe-task-definition \
+            --task-definition arn:aws:ecs:ap-southeast-1:949519472813:task-definition/uat-marketing-website-proxy \
+            --query 'taskDefinition.containerDefinitions[0].extraHosts[0].ipAddress' \
+            --output text \
+          )
+          [ $TASK_PUBLIC_IP -eq $CURRENT_IP ] && exit 0
           TASK_DEFINITION_ARN=$( \
             aws ecs register-task-definition \
             --family 'uat-marketing-website-proxy' \
