@@ -34,7 +34,7 @@ jobs:
             --query 'taskDefinition.containerDefinitions[0].extraHosts[0].ipAddress' \
             --output text \
           )
-          [ $TASK_PUBLIC_IP -eq $CURRENT_IP ] && exit 0
+          [ $TASK_PUBLIC_IP == $CURRENT_IP ] && exit 0
           TASK_DEFINITION_ARN=$( \
             aws ecs register-task-definition \
             --family 'uat-marketing-website-proxy' \
