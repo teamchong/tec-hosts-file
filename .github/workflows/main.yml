@@ -24,8 +24,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-southeast-1
 
-      # Runs a set of commands using the runners shell
-      - name: Deploy new proxy
+      - name: Deploy new proxy PRD
         run: |
           PRD_PRIVATE_IP=$(cat prd_private_ip.txt)
           [ -z $PRD_PRIVATE_IP ] && exit 1
@@ -52,5 +51,36 @@ jobs:
           --service 'arn:aws:ecs:ap-southeast-1:949519472813:service/marketing-website-proxy' \
           --desired-count 1 \
           --task-definition ''$PRD_DEFINITION_ARN'' \
+          --deployment-configuration '{"maximumPercent":200,"minimumHealthyPercent":100}' \
+          --force-new-deployment
+
+
+      - name: Deploy new proxy UAT
+        run: |
+          UAT_PRIVATE_IP=$(cat uat_private_ip.txt)
+          [ -z $UAT_PRIVATE_IP ] && exit 1
+          CURRENT_IP=$( \
+            aws ecs describe-task-definition \
+            --task-definition arn:aws:ecs:ap-southeast-1:949519472813:task-definition/uat-marketing-website-proxy \
+            --query 'taskDefinition.containerDefinitions[0].extraHosts[0].ipAddress' \
+            --output text \
+          )
+          [ $UAT_PRIVATE_IP == $CURRENT_IP ] && exit 0
+          UAT_DEFINITION_ARN=$( \
+            aws ecs register-task-definition \
+            --family 'uat-marketing-website-proxy' \
+            --task-role-arn 'arn:aws:iam::949519472813:role/task-role' \
+            --execution-role-arn 'arn:aws:iam::949519472813:role/task-execution-role' \
+            --network-mode 'bridge' \
+            --container-definitions '[{"portMappings":[{"hostPort":8118,"protocol":"tcp","containerPort":8118}],"memoryReservation":300,"image":"registry.hub.docker.com/splazit/privoxy-alpine:latest","essential":true,"extraHosts":[{"ipAddress":"'$UAT_PRIVATE_IP'","hostname":"executivecentre.com"},{"ipAddress":"'$UAT_PRIVATE_IP'","hostname":"www.executivecentre.com"},{"ipAddress":"'$UAT_PRIVATE_IP'","hostname":"executivecentre.com.cn"},{"ipAddress":"'$UAT_PRIVATE_IP'","hostname":"www.executivecentre.com.cn"},{"ipAddress":"'$UAT_PRIVATE_IP'","hostname":"executivecentre.co.kr"},{"ipAddress":"'$UAT_PRIVATE_IP'","hostname":"www.executivecentre.co.kr"}],"privileged":true,"name":"uat-marketing-website-proxy"}]' \
+            --requires-compatibilities 'EC2' \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text \
+          )
+          aws ecs update-service \
+          --cluster 'arn:aws:ecs:ap-southeast-1:949519472813:cluster/uat-etg-docker' \
+          --service 'arn:aws:ecs:ap-southeast-1:949519472813:service/marketing-website-proxy' \
+          --desired-count 1 \
+          --task-definition ''$UAT_DEFINITION_ARN'' \
           --deployment-configuration '{"maximumPercent":200,"minimumHealthyPercent":100}' \
           --force-new-deployment
