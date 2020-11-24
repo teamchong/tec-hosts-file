@@ -30,7 +30,6 @@ jobs:
           --cluster $CLUSTER \
           --status ACTIVE \
           --max-items 1 \
-          --no-paginate \
           --query 'containerInstanceArns[0]' \
           --output text \
         ` || exit 1
@@ -63,7 +62,6 @@ jobs:
           --cluster $CLUSTER \
           --status ACTIVE \
           --max-items 1 \
-          --no-paginate \
           --query 'containerInstanceArns[0]' \
           --output text \
         ` || exit 1
