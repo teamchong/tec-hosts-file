@@ -25,7 +25,7 @@ jobs:
       shell: bash
       run: |
         CLUSTER=arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker
-        CONTAINER=$( \
+        CONTAINER=` \
           aws ecs list-container-instances \
           --cluster $CLUSTER \
           --status ACTIVE \
@@ -33,22 +33,22 @@ jobs:
           --no-paginate \
           --query 'containerInstanceArns[0]' \
           --output text \
-        ) || exit 1
-        EC2=$( \
+        ` || exit 1
+        EC2=` \
           aws ecs describe-container-instances \
           --cluster $CLUSTER \
           --container-instances $CONTAINER \
           --no-paginate \
           --query 'containerInstances[0].ec2InstanceId' \
           --output text \
-        ) || exit 1
-        PRIVATE_IP=$( \
+        ` || exit 1
+        PRIVATE_IP=` \
           aws ec2 describe-instances \
           --instance-ids $EC2 \
           --no-paginate \
           --query 'Reservations[0].Instances[0].PrivateIpAddress' \
           --output text
-        ) || exit 1
+        ` || exit 1
         echo $PRIVATE_IP > prd_private_ip.txt
         cat <<EOF > index.html
         $PRIVATE_IP executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
@@ -58,7 +58,7 @@ jobs:
       shell: bash
       run: |
         CLUSTER=arn:aws:ecs:ap-southeast-1:949519472813:cluster/uat-etg-docker
-        CONTAINER=$( \
+        CONTAINER=` \
           aws ecs list-container-instances \
           --cluster $CLUSTER \
           --status ACTIVE \
@@ -66,22 +66,22 @@ jobs:
           --no-paginate \
           --query 'containerInstanceArns[0]' \
           --output text \
-        ) || exit 1
-        EC2=$( \
+        ` || exit 1
+        EC2=` \
           aws ecs describe-container-instances \
           --cluster $CLUSTER \
           --container-instances $CONTAINER \
           --no-paginate \
           --query 'containerInstances[0].ec2InstanceId' \
           --output text \
-        ) || exit 1
-        PRIVATE_IP=$( \
+        ` || exit 1
+        PRIVATE_IP=` \
           aws ec2 describe-instances \
           --instance-ids $EC2 \
           --no-paginate \
           --query 'Reservations[0].Instances[0].PrivateIpAddress' \
           --output text
-        ) || exit 1
+        ` || exit 1
         echo $PRIVATE_IP > uat_private_ip.txt
         cat <<EOF > index.html
         $PRIVATE_IP executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
