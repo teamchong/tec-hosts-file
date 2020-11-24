@@ -24,7 +24,7 @@ jobs:
     - name: Retrieve TASK_PUBLIC_IP
       shell: bash
       run: |
-        TASK_ARN=$( \
+        PRD_ARN=$( \
           aws ecs list-tasks \
           --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker \
           --family prd-marketing-website \
@@ -33,37 +33,37 @@ jobs:
           --query 'taskArns[0]' \
           --output text \
         )
-        [ -z $TASK_ARN ] && exit 1
-        TASK_CONTAINER=$( \
+        [ -z $PRD_ARN ] && exit 1
+        PRD_CONTAINER=$( \
           aws ecs describe-tasks \
           --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker \
-          --tasks $TASK_ARN \
+          --tasks $PRD_ARN \
           --no-paginate \
           --query '(sort_by(tasks[?lastStatus == `RUNNING` && containerInstanceArn != ``], &version)[-1].containerInstanceArn)[0]' \
           --output text \
         )
-        [ -z $TASK_CONTAINER ] && exit 1
-        TASK_EC2=$( \
+        [ -z $PRD_CONTAINER ] && exit 1
+        PRD_EC2=$( \
           aws ecs describe-container-instances \
           --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker \
-          --container-instances $TASK_CONTAINER
+          --container-instances $PRD_CONTAINER
           --no-paginate \
           --query 'containerInstances[0].ec2InstanceId' \
           --output text \
         )
-        [ -z $TASK_EC2 ] && exit 1
-        TASK_PRIVATE_IP=$( \
+        [ -z $PRD_EC2 ] && exit 1
+        PRD_PRIVATE_IP=$( \
           aws ec2 describe-instances \
-          --instance-ids i-0473aa317a78b9113 \
+          --instance-ids $PRD_EC2 \
           --no-paginate \
           --query 'Reservations[0].Instances[0].PrivateIpAddress' \
           --output text
         )
-        [ -z $TASK_EC2 ] && exit 1
-        echo $TASK_PRIVATE_IP > private_ip.txt
+        [ -z $PRD_PRIVATE_IP ] && exit 1
+        echo $PRD_PRIVATE_IP > prd_private_ip.txt
         cat <<EOF > index.html
         # Pre-Production
-        $TASK_PRIVATE_IP executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
+        $PRD_PRIVATE_IP executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
         EOF
     - name: Git Commit and Push
       uses: actions-x/commit@v2
