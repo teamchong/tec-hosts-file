@@ -27,21 +27,21 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Deploy new proxy
         run: |
-          TASK_PRIVATE_IP=$(cat private_ip.txt)
+          PRD_PRIVATE_IP=$(cat prd_private_ip.txt)
           CURRENT_IP=$( \
             aws ecs describe-task-definition \
             --task-definition arn:aws:ecs:ap-southeast-1:949519472813:task-definition/prd-marketing-website-proxy \
             --query 'taskDefinition.containerDefinitions[0].extraHosts[0].ipAddress' \
             --output text \
           )
-          [ $TASK_PRIVATE_IP == $CURRENT_IP ] && exit 0
-          TASK_DEFINITION_ARN=$( \
+          [ $PRD_PRIVATE_IP == $CURRENT_IP ] && exit 0
+          PRD_DEFINITION_ARN=$( \
             aws ecs register-task-definition \
             --family 'prd-marketing-website-proxy' \
             --task-role-arn 'arn:aws:iam::949519472813:role/task-role' \
             --execution-role-arn 'arn:aws:iam::949519472813:role/task-execution-role' \
             --network-mode 'bridge' \
-            --container-definitions '[{"portMappings":[{"hostPort":8118,"protocol":"tcp","containerPort":8118}],"memoryReservation":300,"image":"registry.hub.docker.com/splazit/privoxy-alpine:latest","essential":true,"extraHosts":[{"ipAddress":"'$TASK_PUBLIC_IP'","hostname":"executivecentre.com"},{"ipAddress":"'$TASK_PUBLIC_IP'","hostname":"www.executivecentre.com"},{"ipAddress":"'$TASK_PUBLIC_IP'","hostname":"executivecentre.com.cn"},{"ipAddress":"'$TASK_PUBLIC_IP'","hostname":"www.executivecentre.com.cn"},{"ipAddress":"'$TASK_PUBLIC_IP'","hostname":"executivecentre.co.kr"},{"ipAddress":"'$TASK_PUBLIC_IP'","hostname":"www.executivecentre.co.kr"}],"privileged":true,"name":"prd-marketing-website-proxy"}]' \
+            --container-definitions '[{"portMappings":[{"hostPort":8118,"protocol":"tcp","containerPort":8118}],"memoryReservation":300,"image":"registry.hub.docker.com/splazit/privoxy-alpine:latest","essential":true,"extraHosts":[{"ipAddress":"'$PRD_PRIVATE_IP'","hostname":"executivecentre.com"},{"ipAddress":"'$PRD_PRIVATE_IP'","hostname":"www.executivecentre.com"},{"ipAddress":"'$PRD_PRIVATE_IP'","hostname":"executivecentre.com.cn"},{"ipAddress":"'$PRD_PRIVATE_IP'","hostname":"www.executivecentre.com.cn"},{"ipAddress":"'$PRD_PRIVATE_IP'","hostname":"executivecentre.co.kr"},{"ipAddress":"'$PRD_PRIVATE_IP'","hostname":"www.executivecentre.co.kr"}],"privileged":true,"name":"prd-marketing-website-proxy"}]' \
             --requires-compatibilities 'EC2' \
             --query 'taskDefinition.taskDefinitionArn' \
             --output text \
@@ -50,6 +50,6 @@ jobs:
           --cluster 'arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker' \
           --service 'arn:aws:ecs:ap-southeast-1:949519472813:service/marketing-website-proxy' \
           --desired-count 1 \
-          --task-definition ''$TASK_DEFINITION_ARN'' \
+          --task-definition ''$PRD_DEFINITION_ARN'' \
           --deployment-configuration '{"maximumPercent":200,"minimumHealthyPercent":100}' \
           --force-new-deployment
