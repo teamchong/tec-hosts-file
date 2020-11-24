@@ -34,27 +34,36 @@ jobs:
           --output text \
         )
         [ -z $TASK_ARN ] && exit 1
-        TASK_ENI=$( \
+        TASK_CONTAINER=$( \
           aws ecs describe-tasks \
           --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker \
           --tasks $TASK_ARN \
           --no-paginate \
-          --query '(sort_by(tasks[?attachments[0].status != `ATTACHING` && attachments[0].details[? name == `networkInterfaceId`].value != ``], &version)[-1].attachments[0].details[? name == `networkInterfaceId`].value)[0]' \
+          --query '(sort_by(tasks[?lastStatus == `RUNNING` && containerInstanceArn != ``], &version)[-1].containerInstanceArn)[0]' \
           --output text \
         )
-        [ -z $TASK_ENI ] && exit 1
-        TASK_PUBLIC_IP=$( \
-          aws ec2 describe-network-interfaces \
-          --network-interface-ids $TASK_ENI \
+        [ -z $TASK_CONTAINER ] && exit 1
+        TASK_EC2=$( \
+          aws ecs describe-container-instances \
+          --cluster arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker \
+          --container-instances $TASK_CONTAINER
           --no-paginate \
-          --query '(NetworkInterfaces[? Association.PublicIp != ``])[0].Association.PublicIp' \
+          --query 'containerInstances[0].ec2InstanceId' \
           --output text \
         )
-        [ -z $TASK_PUBLIC_IP ] && exit 1
-        echo $TASK_PUBLIC_IP > public_ip.txt
+        [ -z $TASK_EC2 ] && exit 1
+        TASK_PRIVATE_IP=$( \
+          aws ec2 describe-instances \
+          --instance-ids i-0473aa317a78b9113 \
+          --no-paginate \
+          --query 'Reservations[0].Instances[0].PrivateIpAddress' \
+          --output text
+        )
+        [ -z $TASK_EC2 ] && exit 1
+        echo $TASK_PRIVATE_IP > private_ip.txt
         cat <<EOF > index.html
         # Pre-Production
-        $TASK_PUBLIC_IP executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
+        $TASK_PRIVATE_IP executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
         EOF
     - name: Git Commit and Push
       uses: actions-x/commit@v2
