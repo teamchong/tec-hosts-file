@@ -41,7 +41,7 @@ jobs:
             --task-role-arn 'arn:aws:iam::949519472813:role/task-role' \
             --execution-role-arn 'arn:aws:iam::949519472813:role/task-execution-role' \
             --network-mode 'bridge' \
-            --container-definitions '[{"portMappings":[{"hostPort":8118,"protocol":"tcp","containerPort":8118}],"memoryReservation":300,"image":"registry.hub.docker.com/splazit/privoxy-alpine:latest","essential":true,"extraHosts":[{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.co.kr"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.co.kr"}],"privileged":true,"name":"prd-marketing-website-proxy"}]' \
+            --container-definitions '[{"portMappings":[{"hostPort":8118,"protocol":"tcp","containerPort":8118}],"image":"registry.hub.docker.com/splazit/privoxy-alpine:latest","essential":true,"extraHosts":[{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.co.kr"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.co.kr"}],"privileged":true,"name":"prd-marketing-website-proxy"}]' \
             --requires-compatibilities 'EC2' \
             --no-paginate \
             --query 'taskDefinition.taskDefinitionArn' \
@@ -74,7 +74,7 @@ jobs:
             --task-role-arn 'arn:aws:iam::949519472813:role/task-role' \
             --execution-role-arn 'arn:aws:iam::949519472813:role/task-execution-role' \
             --network-mode 'bridge' \
-            --container-definitions '[{"portMappings":[{"hostPort":8118,"protocol":"tcp","containerPort":8118}],"memoryReservation":300,"image":"registry.hub.docker.com/splazit/privoxy-alpine:latest","essential":true,"extraHosts":[{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.co.kr"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.co.kr"}],"privileged":true,"name":"uat-marketing-website-proxy"}]' \
+            --container-definitions '[{"portMappings":[{"hostPort":8118,"protocol":"tcp","containerPort":8118}],"image":"registry.hub.docker.com/splazit/privoxy-alpine:latest","essential":true,"extraHosts":[{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.co.kr"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.co.kr"}],"privileged":true,"name":"uat-marketing-website-proxy"}]' \
             --requires-compatibilities 'EC2' \
             --no-paginate \
             --query 'taskDefinition.taskDefinitionArn' \
