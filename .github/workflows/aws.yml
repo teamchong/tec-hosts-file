@@ -81,7 +81,7 @@ jobs:
           --output text
         ` || exit 1
         echo $PRIVATE_IP > uat_private_ip.txt
-        cat <<EOF > index.html
+        cat <<EOF > uat.html
         $PRIVATE_IP executivecentre.com www.executivecentre.com executivecentre.com.cn www.executivecentre.com.cn executivecentre.co.kr www.executivecentre.co.kr
         EOF
 
