@@ -26,7 +26,7 @@ jobs:
 
       - name: Deploy new proxy PRD
         run: |
-          PRIVATE_IP=172.31.11.77
+          PRIVATE_IP=`host -t A internal-prd-etg-sentinel-internal-1601811399.ap-southeast-1.elb.amazonaws.com | awk '/has.*address/{print $NF; exit}'`
           CURRENT_IP=` \
             aws ecs describe-task-definition \
             --task-definition arn:aws:ecs:ap-southeast-1:949519472813:task-definition/prd-marketing-website-proxy \
@@ -41,7 +41,7 @@ jobs:
             --task-role-arn 'arn:aws:iam::949519472813:role/task-role' \
             --execution-role-arn 'arn:aws:iam::949519472813:role/task-execution-role' \
             --network-mode 'bridge' \
-            --container-definitions '[{"portMappings":[{"hostPort":8118,"protocol":"tcp","containerPort":8118}],"image":"registry.hub.docker.com/splazit/privoxy-alpine:latest","essential":true,"memoryReservation":128,"extraHosts":[{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.co.kr"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.co.kr"}],"privileged":true,"name":"prd-marketing-website-proxy"}]' \
+            --container-definitions '[{"portMappings":[{"hostPort":0,"protocol":"tcp","containerPort":8118}],"image":"registry.hub.docker.com/splazit/privoxy-alpine:latest","essential":true,"memoryReservation":128,"extraHosts":[{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.co.kr"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.co.kr"}],"privileged":true,"name":"prd-marketing-website-proxy"}]' \
             --requires-compatibilities 'EC2' \
             --no-paginate \
             --query 'taskDefinition.taskDefinitionArn' \
@@ -59,7 +59,7 @@ jobs:
 
       - name: Deploy new proxy UAT
         run: |
-          PRIVATE_IP=54.169.156.28
+          PRIVATE_IP=`host -t A internal-uat-etg-sentinel-internal-1077707250.ap-southeast-1.elb.amazonaws.com | awk '/has.*address/{print $NF; exit}'`
           CURRENT_IP=` \
             aws ecs describe-task-definition \
             --task-definition arn:aws:ecs:ap-southeast-1:949519472813:task-definition/uat-marketing-website-proxy \
@@ -74,7 +74,7 @@ jobs:
             --task-role-arn 'arn:aws:iam::949519472813:role/task-role' \
             --execution-role-arn 'arn:aws:iam::949519472813:role/task-execution-role' \
             --network-mode 'bridge' \
-            --container-definitions '[{"portMappings":[{"hostPort":8118,"protocol":"tcp","containerPort":8118}],"image":"registry.hub.docker.com/splazit/privoxy-alpine:latest","essential":true,"memoryReservation":128,"extraHosts":[{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.co.kr"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.co.kr"}],"privileged":true,"name":"uat-marketing-website-proxy"}]' \
+            --container-definitions '[{"portMappings":[{"hostPort":0,"protocol":"tcp","containerPort":8118}],"image":"registry.hub.docker.com/splazit/privoxy-alpine:latest","essential":true,"memoryReservation":128,"extraHosts":[{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.com.cn"},{"ipAddress":"'$PRIVATE_IP'","hostname":"executivecentre.co.kr"},{"ipAddress":"'$PRIVATE_IP'","hostname":"www.executivecentre.co.kr"}],"privileged":true,"name":"uat-marketing-website-proxy"}]' \
             --requires-compatibilities 'EC2' \
             --no-paginate \
             --query 'taskDefinition.taskDefinitionArn' \
