@@ -52,7 +52,7 @@ jobs:
           --service 'arn:aws:ecs:ap-southeast-1:949519472813:service/marketing-website-proxy' \
           --desired-count 1 \
           --task-definition ''$DEFINITION_ARN'' \
-          --deployment-configuration '{"maximumPercent":200,"minimumHealthyPercent":100}' \
+          --deployment-configuration '{"maximumPercent":100,"minimumHealthyPercent":0}' \
           --force-new-deployment \
           --no-paginate
 
@@ -85,6 +85,6 @@ jobs:
           --service 'arn:aws:ecs:ap-southeast-1:949519472813:service/marketing-website-proxy' \
           --desired-count 1 \
           --task-definition ''$DEFINITION_ARN'' \
-          --deployment-configuration '{"maximumPercent":200,"minimumHealthyPercent":100}' \
+          --deployment-configuration '{"maximumPercent":100,"minimumHealthyPercent":0}' \
           --force-new-deployment \
           --no-paginate
