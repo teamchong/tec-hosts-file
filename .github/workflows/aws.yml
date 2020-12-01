@@ -24,29 +24,11 @@ jobs:
     - name: Retrieve PRD_PRIVATE_IP
       shell: bash
       run: |
-        CLUSTER=arn:aws:ecs:ap-southeast-1:949519472813:cluster/prd-etg-docker
-        CONTAINER=` \
-          aws ecs list-container-instances \
-          --cluster $CLUSTER \
-          --status ACTIVE \
-          --max-items 1 \
-          --query 'containerInstanceArns[0]' \
-          --output text \
-        ` || exit 1
-        EC2=` \
-          aws ecs describe-container-instances \
-          --cluster $CLUSTER \
-          --container-instances $CONTAINER \
-          --no-paginate \
-          --query 'containerInstances[0].ec2InstanceId' \
-          --output text \
-        ` || exit 1
-        PRIVATE_IP=` \
-          aws ec2 describe-instances \
-          --instance-ids $EC2 \
-          --no-paginate \
-          --query 'Reservations[0].Instances[0].PrivateIpAddress' \
-          --output text
+        PRIVATE_IP=`
+          aws ec2 describe-network-interfaces \
+          --filters Name=description,Values="ELB app/prd-etg-sentinel-internal/7361033c6afbd142" \
+          --query 'NetworkInterfaces[*].PrivateIpAddresses[*].PrivateIpAddress' \
+          --output text | awk '{print $1; exit}' \
         ` || exit 1
         echo $PRIVATE_IP > prd_private_ip.txt
         cat <<EOF > index.html
@@ -74,11 +56,10 @@ jobs:
           --output text \
         ` || exit 1
         PRIVATE_IP=` \
-          aws ec2 describe-instances \
-          --instance-ids $EC2 \
-          --no-paginate \
-          --query 'Reservations[0].Instances[0].PrivateIpAddress' \
-          --output text
+          aws ec2 describe-network-interfaces \
+          --filters Name=description,Values="ELB app/uat-etg-sentinel-internal/bb958d8d931fcaf1" \
+          --query 'NetworkInterfaces[*].PrivateIpAddresses[*].PrivateIpAddress' \
+          --output text | awk '{print $1; exit}' \
         ` || exit 1
         echo $PRIVATE_IP > uat_private_ip.txt
         cat <<EOF > uat.html
