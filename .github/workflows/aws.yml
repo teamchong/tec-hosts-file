@@ -26,7 +26,7 @@ jobs:
       run: |
         PRD_PRIVATE_IP=`
           aws ec2 describe-network-interfaces \
-          --filters Name=description,Values="ELB app/prd-etg-sentinel-internal/7361033c6afbd142" \
+          --filters Name=description,Values="ELB app/prd-etg-sentinel-internal/7361033c6afbd142" Name=availability-zone,Values="ap-southeast-1a" \
           --query 'NetworkInterfaces[*].PrivateIpAddresses[*].PrivateIpAddress' \
           --output text | awk '{print $1; exit}' \
         ` || exit 1
@@ -36,7 +36,7 @@ jobs:
         EOF
         UAT_PRIVATE_IP=` \
           aws ec2 describe-network-interfaces \
-          --filters Name=description,Values="ELB app/uat-etg-sentinel-internal/bb958d8d931fcaf1" \
+          --filters Name=description,Values="ELB app/uat-etg-sentinel-internal/bb958d8d931fcaf1" Name=availability-zone,Values="ap-southeast-1a" \
           --query 'NetworkInterfaces[*].PrivateIpAddresses[*].PrivateIpAddress' \
           --output text | awk '{print $1; exit}' \
         ` || exit 1
